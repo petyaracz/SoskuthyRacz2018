@@ -2,4 +2,4 @@
 
 data and code
 
-for content of files, see master_script.Rmd
+for content of files, see master_analysis.Rmd
