@@ -1,0 +1,127 @@
+---
+title: "GCM predictions for 'Beyond plain and extragrammatical morphology: echo-pairs in Hungarian'"
+author: Márton Sóskuthy and Péter Rácz
+output:
+  html_document: default
+  html_notebook: default
+---
+
+This document shows how the GCM predictions were generated using rgcm.
+
+We first load the data.
+
+```{r}
+library(tidyverse)
+library(arm)
+
+exp_data <- read_csv("exp_data.csv")
+corp_data <- read_csv("echo_pair_corpus.csv")
+
+# so that "m" is unmarked and "b" is marked in stats & graphs
+exp_data$behaviour <- factor(exp_data$behaviour, levels=c("m","b"))
+corp_data$behaviour <- factor(corp_data$behaviour, levels=c("m","b"))
+
+# removing .s from colnames for consistency
+colnames(exp_data) <- gsub("[.]", "_", colnames(exp_data))
+colnames(corp_data) <- gsub("[.]", "_", colnames(corp_data))
+```
+
+Installing rgcm should be fairly straightforward. The package relies on rjags, which is pretty oldschool, but it was written quite a while ago when RStan wasn't yet as popular as it is today. You may need to install rjags manually.
+
+```{r}
+install.packages("random")
+library(devtools)
+install_git("https://github.com/soskuthy/rgcm")
+library(rgcm)
+```
+
+We first set the priors for our rgcm model. The different parameters are explained in detail in the supplementary materials. ?default.priors provides more information about the priors.
+
+```{r}
+# using default priors for rgcm
+new_priors <- default.priors
+# ... but changing the prior for the precision parameter to 13.06 manually
+# (determined from previous exploration)
+new_priors$c <- quote(13.06)
+```
+
+We now fit a GCM to the corpus data. You may want to change the value of parallel especially if your machine has fewer or more available processor cores. There's no point in specifying a value > 4, as the default is to run 4 parallel Monte Carlo chains.
+
+```{r}
+set.seed(123) # for exact replicability
+# rgcm does not seem happy with tidy data frames, so we need to convert corp_data back to
+# a traditional one
+corp_gcm <- gcm(behaviour ~ O1 + N1 + C1 + O2 + N2 + C2, 
+                data=as.data.frame(corp_data), parallel=2,
+                priors=new_priors)
+# despite the warning message, parameter estimation shouldn't take much longer than 2-3 minutes
+```
+
+The informed model will use predictions taken directly from the estimated model. For the naive model, we create new parameter values that have equal weights for all features and output categories.
+
+```{r}
+# creating parameter values for the naive model
+naive_pars <- predict(corp_gcm, sample.type="mean")$predictions[[1]]$parameters
+naive_pars["b[1]"] <- 0.5
+naive_pars["b[2]"] <- 0.5
+naive_pars["w[1]"] <- 1/6
+naive_pars["w[2]"] <- 1/6
+naive_pars["w[3]"] <- 1/6
+naive_pars["w[4]"] <- 1/6
+naive_pars["w[5]"] <- 1/6
+naive_pars["w[6]"] <- 1/6
+```
+
+We now generate the prediction probabilities for the experimental data using the predict.gcm function. 
+
+```{r}
+# a mini data set which has a single row for each stimulus (so 48 rows altogether)
+exp_stim <- exp_data %>%
+  dplyr::select(item, O1, N1, C1, O2, N2, C2) %>%
+  unique %>%
+  mutate(behaviour="b")
+
+
+
+# adding predictors to experimental data
+# 1) for the naive predictions, we supply naive_pars as 
+#    the parameters to condition the predictions on
+gcm_naive_exp_preds <- predict(corp_gcm, newtest=as.data.frame(exp_stim), 
+                               user.samples=naive_pars, 
+                               type="probabilities")$predictions[[1]]$outcome
+# 2) for the informed predictions, we simply use the
+#    mean values of the parameters from the MCMC samples
+gcm_inf_exp_preds <- predict(corp_gcm, newtest=as.data.frame(exp_stim), 
+                             sample.type="mean", 
+                             type="probabilities")$predictions[[1]]$outcome
+
+# we now add the logit transformed probabilities to the mini data set
+exp_stim$gcm_naive <- logit(gcm_naive_exp_preds[,2])
+exp_stim$gcm_inf <- logit(gcm_inf_exp_preds[,2])
+
+# and we merge the mini data set with the experimental data
+exp_data <- merge(exp_data, exp_stim[,c("item","gcm_naive", "gcm_inf")], by="item")
+```
+
+And now we generate prediction probabilities for the corpus data. The value of newtest is left unspeficied, as the GCM was originally fit to the corpus data -- therefore, predict.gcm will generate predictions for the original data. Note that when the training and test data are the same (i.e. when newtest is unspecified), predict.gcm automatically uses a leave-one-out method for calculating categorisation probabilities, i.e. the probabilities for a given item are not influenced by the outcome category of the item itself.
+
+```{r}
+# adding predictors to corpus data
+# 1) for the naive predictions, we supply naive_pars as 
+#    the parameters to condition the predictions on
+gcm_naive_corp_preds <- predict(corp_gcm, user.samples=naive_pars,
+                                type="probabilities")$predictions[[1]]$outcome[,2]
+# 2) for the informed predictions, we simply use the
+#    mean values of the parameters from the MCMC samples
+gcm_inf_corp_preds <- predict(corp_gcm, sample.type="mean", 
+                              type="probabilities")$predictions[[1]]$outcome[,2]
+
+# we now add the logit transformed probabilities to the corpus data
+corp_data$gcm_naive <- logit(gcm_naive_corp_preds)
+corp_data$gcm_inf <- logit(gcm_inf_corp_preds)
+```
+
+
+
+
+
