@@ -1,0 +1,3 @@
+form	pattern	form1		form2		A		B	Change		Pres	Pfeat	P		Q	Qfeat	Qres	scope	hits	reliability	confidence	related forms	exceptions
+1	1	lkwi	->	lmkwi	by	[]	->	m	/m/2	/		[=, D, G, K, N, S, T, Z, b, c, d, f, g, h, k, l, m, n, p, r, s, t, v, z]		___		[=, K, T, c, k, p, t]	Y	40	29	0.725	0.5922051284597865	ccia, TTia, kKuu, TkAO, ccea, ccikO, pcii, =cia, dpula, =koE, fkia, kkaSi, kcOi, pciUr, scoi, bkoko, Tkoi, TkOi, ktaa	rkOa, kkaaS, KkUom, Stutog, TkAO, TTaka, dcui, gcei, lkusuS, skesi, skEem			
+1	2	lkwi	->	lbkwi	by	[]	->	b	/b/2	/		[c, d, l, n, s, t, z]		___		[g, k]	Y	4	4	1.0	0.786	tgiriS, lkusuS, skesi, skEem				

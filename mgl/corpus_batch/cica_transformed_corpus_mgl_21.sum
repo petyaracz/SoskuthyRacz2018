@@ -1,0 +1,3 @@
+form	pattern	form1		form2		A		B	Change		Pres	Pfeat	P		Q	Qfeat	Qres	scope	hits	reliability	confidence	related forms	exceptions
+1	1	Srurog	->	Smrurog	by	[]	->	m	/m/2	/		[S, Z, r]		___		[S, Z, r]	Y	4	4	1.0	0.786	rZia, SSuog, SrAi, Srwi				
+1	2	Srurog	->	Sbrurog	by	[]	->	b	/b/2	/		[D, G, K, S, T, Z]		___		[D, G, N, Z, b, d, g, j, l, m, n, r, v, z]	Y	26	21	0.8076923076923077	0.7425858143584002	Tgia, Tree, TnIja, TrwgW, Sjana, Tnoka, Tlili, Zgia, TvAer, Tnii, GGaa, Tnoti, SjatoS, Snyi, TnegW, Treeg, TlilAm, Tnwgwtt, GmEAn	Tnii, Tlili, Tlai, SrAi, Srwi			

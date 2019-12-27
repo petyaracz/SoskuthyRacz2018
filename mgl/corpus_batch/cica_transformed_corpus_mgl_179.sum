@@ -1,0 +1,3 @@
+form	pattern	form1		form2		A		B	Change		Pres	Pfeat	P		Q	Qfeat	Qres	scope	hits	reliability	confidence	related forms	exceptions
+1	1	smoor	->	smmoor	by	[]	->	m	/m/2	/		[c, s, t]		___		[=, D, G, K, N, S, T, Z, b, c, d, f, g, h, k, l, m, n, p, r, s, t, v, z]	Y	25	15	0.6	0.5282339347277394	ccia, ccea, ccikO, snadi, troGi, cliu, scoi, clia, clua, sdaO, ssuog, tNaa, tnAci, tvee, tvei	tnydi, sbay, tnyci, snetem, tgiriS, tnyTi, skesi, skEem, snudi, tnydEr			
+1	2	smoor	->	sbmoor	by	[]	->	b	/b/2	/		[=, D, G, K, N, S, T, Z, b, c, d, f, g, h, k, l, m, n, p, r, s, t, v, z]		___	m	[A, E, I, O, U, W, Y, a, e, i, o, u, w, y]	Y	4	4	1.0	0.786	rmIel, GmEAn, hmai, hmymw				

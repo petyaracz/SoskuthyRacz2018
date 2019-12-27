@@ -1,0 +1,3 @@
+form	pattern	form1		form2		A		B	Change		Pres	Pfeat	P		Q	Qfeat	Qres	scope	hits	reliability	confidence	related forms	exceptions
+1	1	pciUr	->	pmciUr	by	[]	->	m	/m/2	/		[=, K, T, c, k, p, t]		___		[c, s, t]	Y	13	13	1.0	0.9282568796795697	ccia, ccea, ccikO, =sata, pcii, pswe, =cia, psukO, Tsui, kcOi, Tsoi, ktaa, ptaron				
+1	2	pciUr	->	pbciUr	by	[]	->	b	/b/2	/		[=, D, G, K, N, S, T, Z, b, c, d, f, g, h, k, l, m, n, p, r, s, t, v, z]		___		[=, D, G, K, N, T, b, c, d, g, k, m, n, p, t]	Y	103	61	0.5922330097087378	0.3287886787830632	Tgia, TnIja, =gura, =guri, =dEi, tnydi, rkOa, Tnoka, kkaaS, gnwdi, Zgia, KkUom, Tnii, =gurAl, GGaa, =Gue, Tnoti, Stutog, sbay	ccia, TTia, kKuu, TkAO, ccea, ccikO, snadi, hguO, pcii, =nuci, lkwi, =cia, Tnii, dpula, fnaki, hnaci, =koE, fkia, kkaSi			

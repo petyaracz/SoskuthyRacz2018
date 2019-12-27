@@ -1,0 +1,3 @@
+form	pattern	form1		form2		A		B	Change		Pres	Pfeat	P		Q	Qfeat	Qres	scope	hits	reliability	confidence	related forms	exceptions
+1	1	=lavi	->	=mlavi	by	[]	->	m	/m/2	/		[=, D, G, K, S, T, Z, b, c, d, f, g, k, p, s, t, v, z]		___		[l, s, z]	Y	23	16	0.6956521739130435	0.6201544650523808	=ziE, =sata, pswe, cliu, psukO, Tlili, Tsui, gsuti, klua, clia, clua, Tlai, Tsoi, flee, Gsui, ssuog	=ziE, =leeG, Tlili, =ziom, =laku, TlilAm, zloa			
+1	2	=lavi	->	=blavi	by	[]	->	b	/b/2	/			=	___		[h, j, l, r]	Y	10	10	1.0	0.9084365285348519	=jeNe, =leeG, =rai, =heem, =redW, =raaN, =rodaS, =laku, =jeNuS, =roSi				

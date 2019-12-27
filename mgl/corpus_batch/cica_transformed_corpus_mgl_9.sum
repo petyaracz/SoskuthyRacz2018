@@ -1,0 +1,3 @@
+form	pattern	form1		form2		A		B	Change		Pres	Pfeat	P		Q	Qfeat	Qres	scope	hits	reliability	confidence	related forms	exceptions
+1	1	zrodom	->	zmrodom	by	[]	->	m	/m/2	/		[c, d, s, t, z]		___		[=, D, G, K, N, S, T, Z, b, c, d, f, g, h, j, k, l, m, n, p, r, s, t, v, z]	Y	36	19	0.5277777777777778	0.4594154103486143	ccia, ccea, ccikO, snadi, troGi, druva, cliu, dpula, sjia, scoi, clia, clua, sdaO, ssuog, tNaa, tnAci, tvee, tvei, zbai	tnydi, zrwgW, sbay, tnyci, snetem, tgiriS, tnyTi, draa, dcui, druci, skesi, skEem, smoor, snudi, tnydEr, zloa, zhuog			
+1	2	zrodom	->	zbrodom	by	[]	->	b	/b/2	/		[N, Z, l, m, n, r, v, z]		___		[N, l, m, n, r]	Y	12	12	1.0	0.9226783472660829	Nluam, zrwgW, NlUom, rnoGoS, lnaGi, nroci, rmIel, vreSi, rnedi, rnedWr, vrwwS, zloa				

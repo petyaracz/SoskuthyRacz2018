@@ -1,0 +1,347 @@
+---
+title: "GCM & MGL predictions for 'Beyond plain and extragrammatical morphology: echo-pairs in Hungarian'"
+author: Márton Sóskuthy and Péter Rácz
+output:
+  html_document: default
+  html_notebook: default
+---
+
+This document shows how the GCM/MGL predictions were generated.
+
+We first load the data. An MGL model has already been trained through the MGL Java app, so for that model we load the outputs; for the GCM, the models will be trained below.
+
+```{r}
+library(tidyverse)
+library(arm)
+
+# loading experimental & corpus data
+exp_data <- read_csv("../raw_data/exp_data.csv")
+corp_data <- read_csv("../raw_data/echo_pair_corpus.csv")
+
+# loading MGL model predictions for nonce-forms
+mgl_exp <- read_delim("../petya_code/cicapetyamgl/cica_transformed_mgl.sum", delim="\t")
+mgl_corp_dir <- "../petya_code/cicapetyamgl/corpus_batch"
+
+# loading helper functions for processing MGL output
+source("cicamica_helper_functions.r")
+
+# so that "m" is unmarked and "b" is marked in stats & graphs
+exp_data$behaviour <- factor(exp_data$behaviour, levels=c("m","b"))
+corp_data$behaviour <- factor(corp_data$behaviour, levels=c("m","b"))
+
+# removing .s from colnames for consistency
+colnames(exp_data) <- gsub("[.]", "_", colnames(exp_data))
+colnames(corp_data) <- gsub("[.]", "_", colnames(corp_data))
+
+# removing previously generated gcm and mgl predictions from the data sets
+exp_data <- dplyr::select(exp_data, -gcm_inf, -gcm_naive)
+corp_data <- dplyr::select(corp_data, -gcm_inf, -gcm_naive)
+```
+
+## GCM predictions
+
+Installing rgcm should be fairly straightforward. The package relies on rjags, which is pretty oldschool, but it was written quite a while ago when RStan wasn't yet as popular as it is today. You may need to install rjags manually.
+
+```{r}
+#install.packages("random")
+#library(devtools)
+#install_git("https://github.com/soskuthy/rgcm")
+library(rgcm)
+```
+
+Two broad types of GCM outputs will be produced: one using phoneme-level info only, and another one using phonological features. We start with the phoneme-level models.
+
+### GCM phoneme-level models
+
+We first set the priors for our rgcm model. The different parameters are explained in detail in the supplementary materials. ?default.priors provides more information about the priors.
+
+```{r}
+# using default priors for rgcm
+new_priors <- default.priors
+# ... but changing the prior for the precision parameter to 13.06 manually
+# (determined from previous exploration)
+#new_priors$c <- quote(13.06)
+```
+
+We now fit a GCM to the corpus data. You may want to change the value of parallel especially if your machine has fewer or more available processor cores. There's no point in specifying a value > 4, as the default is to run 4 parallel Monte Carlo chains.
+
+```{r}
+set.seed(123) # for exact replicability - but this doesn't work with parallel cores :(
+# rgcm does not seem happy with tidy data frames, so we need to convert corp_data back to a traditional one
+corp_gcm <- gcm(behaviour ~ O1 + N1 + C1 + O2 + N2 + C2, 
+                data=as.data.frame(corp_data),
+                priors=new_priors,
+                adaptSteps=2000,
+                burnInSteps=2000)
+# despite the warning message, parameter estimation shouldn't take much longer than 2-3 minutes
+```
+
+The informed model will use predictions taken directly from the estimated model. For the naive model, we create new parameter values that have equal weights for all features and output categories.
+
+```{r}
+# creating parameter values for the naive model
+naive_pars <- predict(corp_gcm, sample.type="mean")$predictions[[1]]$parameters
+naive_pars["b[1]"] <- 0.5
+naive_pars["b[2]"] <- 0.5
+naive_pars["w[1]"] <- 1/6
+naive_pars["w[2]"] <- 1/6
+naive_pars["w[3]"] <- 1/6
+naive_pars["w[4]"] <- 1/6
+naive_pars["w[5]"] <- 1/6
+naive_pars["w[6]"] <- 1/6
+```
+
+We now generate the prediction probabilities for the experimental data using the predict.gcm function. 
+
+```{r}
+# a mini data set which has a single row for each stimulus (so 48 rows altogether)
+exp_stim <- exp_data %>%
+  dplyr::select(item, O1, N1, C1, O2, N2, C2) %>%
+  unique %>%
+  mutate(behaviour="b")
+
+# adding predictors to experimental data
+# 1) for the naive predictions, we supply naive_pars as 
+#    the parameters to condition the predictions on
+gcm_naive_exp_preds <- predict(corp_gcm, newtest=as.data.frame(exp_stim), 
+                               user.samples=naive_pars, 
+                               type="probabilities")$predictions[[1]]$outcome
+# 2) for the informed predictions, we simply use the
+#    mean values of the parameters from the MCMC samples
+gcm_inf_exp_preds <- predict(corp_gcm, newtest=as.data.frame(exp_stim), 
+                             sample.type="mean", 
+                             type="probabilities")$predictions[[1]]$outcome
+
+# we now add the logit transformed probabilities to the mini data set
+exp_stim$gcm_naive <- logit(gcm_naive_exp_preds[,2])
+exp_stim$gcm_inf <- logit(gcm_inf_exp_preds[,2])
+
+# and we merge the mini data set with the experimental data
+exp_data <- merge(exp_data, exp_stim[,c("item","gcm_naive", "gcm_inf")], by="item")
+```
+
+And now we generate prediction probabilities for the corpus data. The value of newtest is left unspeficied, as the GCM was originally fit to the corpus data -- therefore, predict.gcm will generate predictions for the original data. Note that when the training and test data are the same (i.e. when newtest is unspecified), predict.gcm automatically uses a leave-one-out method for calculating categorisation probabilities, i.e. the probabilities for a given item are not influenced by the outcome category of the item itself.
+
+```{r}
+# adding predictors to corpus data
+# 1) for the naive predictions, we supply naive_pars as 
+#    the parameters to condition the predictions on
+gcm_naive_corp_preds <- predict(corp_gcm, user.samples=naive_pars,
+                                type="probabilities")$predictions[[1]]$outcome[,2]
+# 2) for the informed predictions, we simply use the
+#    mean values of the parameters from the MCMC samples
+gcm_inf_corp_preds <- predict(corp_gcm, sample.type="mean", 
+                              type="probabilities")$predictions[[1]]$outcome[,2]
+
+# we now add the logit transformed probabilities to the corpus data
+corp_data$gcm_naive <- logit(gcm_naive_corp_preds)
+corp_data$gcm_inf <- logit(gcm_inf_corp_preds)
+```
+
+### GCM feature-based models
+
+We first need to set up our data sets so that they contain featural information that can be used for training a feature-based GCM. We use the same feature set that was used to train the MGL. This feature set uses a different phonetic transcription system from the one in our data, so we need to convert the symbols in O1, O2, etc. to these ones; this is done using the magyar2() function (from the helper functions file).
+
+```{r}
+cica_features <- read_tsv("CELEXHungarian_gcm.fea.txt")
+
+# different positions that need converted symbols / features
+positions <- c("O1","N1","C1", "O2", "N2", "C2")
+
+# setting up new data sets for the feature-based analysis
+# order column included to make it easier to add the
+# predictions to the original data set
+corp_data_fea <- corp_data %>%
+  mutate(order=1:nrow(corp_data)) %>%
+  mutate_at(positions, magyar2, only_first=T)
+exp_data_fea <- exp_data %>%
+  mutate(order=1:nrow(exp_data)) %>%
+  mutate_at(positions, magyar2, only_first=T)
+exp_stim_fea <- exp_stim  %>%
+  mutate(order=1:nrow(exp_stim)) %>%
+  mutate_at(positions, magyar2, only_first=T)
+
+# a good-old fashioned for loop that goes through each position
+for (position in positions) {
+  # a temporary data frame with the feature values
+  # this is necessary since the header has to be 
+  # rewritten for merging with the main data frames
+  cica_features_temp <- cica_features
+  # renaming the columns so that 
+  # (i) the first one can be used as an id for merging
+  # (ii) the rest are of the form O1_son, O1_high, etc.
+  colnames(cica_features_temp) <- c(position, paste0(position, "_", colnames(cica_features_temp)[2:ncol(cica_features_temp)]))
+  
+  # merging the main data sets with the features
+  # for the segment in the relevant position
+  corp_data_fea <- inner_join(corp_data_fea, cica_features_temp, by=position)
+  exp_data_fea <- inner_join(exp_data_fea, cica_features_temp, by=position)
+  exp_stim_fea <- inner_join(exp_stim_fea, cica_features_temp, by=position)
+}
+
+corp_data_fea <- corp_data_fea %>% arrange(order)
+exp_data_fea <- exp_data_fea %>% arrange(order)
+exp_stim_fea <- exp_stim_fea %>% arrange(order)
+```
+
+We now set the priors for our rgcm model. Only the value of c changes compared to the previous model.
+
+```{r}
+# using default priors for rgcm
+new_priors <- default.priors
+# ... but changing the prior for the precision parameter to 40 manually
+# (determined from previous exploration)
+# new_priors$c <- quote(40)
+```
+
+We now fit a GCM to the corpus data. You may want to change the value of parallel especially if your machine has fewer or more available processor cores. There's no point in specifying a value > 4, as the default is to run 4 parallel Monte Carlo chains.
+
+We need to use a complex formula here that includes all of the features that we've created. But this can be done automatically.
+
+```{r}
+gcm_feature_names <- grep("[ONC][12][_]", colnames(corp_data_fea), value=T)
+gcm_formula <- as.formula(paste0("behaviour ~ ", paste(gcm_feature_names, collapse=" + ")))
+
+set.seed(123) # for exact replicability
+# rgcm does not seem happy with tidy data frames, so we need to convert corp_data back to a traditional one
+corp_gcm_fea <- gcm(gcm_formula, 
+                    data=as.data.frame(corp_data_fea),
+                    priors=new_priors,
+                    adaptSteps=2000,
+                    burnInSteps=2000)
+# despite the warning message, parameter estimation shouldn't take much longer than 2-3 minutes
+```
+
+The informed model will use predictions taken directly from the estimated model. For the naive model, we create new parameter values that have equal weights for all features and output categories.
+
+```{r}
+# creating parameter values for the naive model
+naive_pars <- predict(corp_gcm_fea, sample.type="mean")$predictions[[1]]$parameters
+naive_pars["b[1]"] <- 0.5
+naive_pars["b[2]"] <- 0.5
+naive_pars[grepl("^w", names(naive_pars))] <- 1/length(grep("^w", names(naive_pars)))
+```
+
+We now generate the prediction probabilities for the experimental data using the predict.gcm function. 
+
+```{r}
+# adding predictors to experimental data
+# 1) for the naive predictions, we supply naive_pars as 
+#    the parameters to condition the predictions on
+gcm_fea_naive_exp_preds <- predict(corp_gcm_fea, newtest=as.data.frame(exp_stim_fea), 
+                               user.samples=naive_pars, 
+                               type="probabilities")$predictions[[1]]$outcome
+# 2) for the informed predictions, we simply use the
+#    mean values of the parameters from the MCMC samples
+gcm_fea_inf_exp_preds <- predict(corp_gcm_fea, newtest=as.data.frame(exp_stim_fea), 
+                             sample.type="mean", 
+                             type="probabilities")$predictions[[1]]$outcome
+
+# we now add the logit transformed probabilities to the stimulus data frame
+exp_stim_fea$gcm_naive_fea <- logit(gcm_fea_naive_exp_preds[,2])
+exp_stim_fea$gcm_inf_fea <- logit(gcm_fea_inf_exp_preds[,2])
+
+# and we merge the mini data set with the experimental data
+exp_data <- merge(exp_data, exp_stim_fea[,c("item","gcm_naive_fea", "gcm_inf_fea")], by="item")
+```
+
+And now we generate prediction probabilities for the corpus data. The value of newtest is left unspeficied, as the GCM was originally fit to the corpus data -- therefore, predict.gcm will generate predictions for the original data. Note that when the training and test data are the same (i.e. when newtest is unspecified), predict.gcm automatically uses a leave-one-out method for calculating categorisation probabilities, i.e. the probabilities for a given item are not influenced by the outcome category of the item itself.
+
+```{r}
+# adding predictors to corpus data
+# 1) for the naive predictions, we supply naive_pars as 
+#    the parameters to condition the predictions on
+gcm_naive_fea_corp_preds <- predict(corp_gcm_fea, user.samples=naive_pars,
+                                type="probabilities")$predictions[[1]]$outcome[,2]
+# 2) for the informed predictions, we simply use the
+#    mean values of the parameters from the MCMC samples
+gcm_inf_fea_corp_preds <- predict(corp_gcm_fea, sample.type="mean", 
+                              type="probabilities")$predictions[[1]]$outcome[,2]
+
+# we now add the logit transformed probabilities to the corpus data
+# (remember, we reordered the data to make sure this is ok)
+corp_data$gcm_naive_fea <- logit(gcm_naive_fea_corp_preds)
+corp_data$gcm_inf_fea <- logit(gcm_inf_fea_corp_preds)
+```
+
+## MGL predictions
+
+We now add the MGL-based predictions to the data sets. The MGL output file with the predicted output probabilities has already been read in; but it needs further processing so that it can be merged with the existing data.
+
+The version of the MGL that we ran relied on a reordered version of the base and the echo. The details of the reordering are shown in the supplementary materials. This reordering was necessary since the MGL uses local information to create generalisations, and otherwise it simply would not have been able to (i) generalise across different O1's or (ii) access information in C1/O2. The reordered forms look like this:
+
+- base: O1 C1/O2 N1 (O2) N2 C2 (zordom -> zrodom; cica -> ccia; édi -> =déi; = is empty O1)
+- echo: O1 behaviour C1/O2 N1 (O2) N2 C2 (bordom -> zbrodom; mica -> cmcia; bédi -> =bdéi)
+
+We need to use these forms to extract the predicted behaviours, merge with existing data, etc. So we first convert them back to the original format.
+
+```{r}
+# experimental data: reformat base
+mgl_exp$form1 <- gsub("^([jNTgrnczdmstlhkKfSGZvpb=])([jNTgrnczdmstlhkKfSGZvpb])([eiaIuoEyOwWUA])", "\\1\\3\\2", mgl_exp$form1, perl=T)
+mgl_exp$form1 <- gsub("=", "", mgl_exp$form1)
+
+# experimental data: reformat echo
+mgl_exp$form2 <- gsub("^([jNTgrnczdmstlhkKfSGZvpb=])([bm])([jNTgrnczdmstlhkKfSGZvpb])([eiaIuoEyOwWUA])", "\\2\\4\\3", mgl_exp$form2, perl=T)
+mgl_exp$form2 <- gsub("=", "", mgl_exp$form2)
+```
+
+We now extract information about the predicted probability of a b vs m outcome. Both b and m are assigned an output confidence rating; since all other model outputs have been summarised in terms of the probability of a [b] outcome, this is also what we do here. We use the formula b_confidence / (m_confidence + b_confidence) to obtain a probability (and then calculate the logit transform as we've done elsewhere).
+
+```{r}
+mgl_exp_predictions <- mgl_exp %>%
+  dplyr::select(form1, B, confidence) %>%
+  group_by(form1) %>%
+  mutate(mgl = logit(confidence / sum(confidence))) %>%
+  ungroup() %>%
+  filter(B=="b") %>%
+  dplyr::select(form1, mgl)
+```
+
+The corpus stuff is trickier, as we used a leave-one-out method, meaning that the model was fit separately for every test word (with a training set that *excluded* that test word). We therefore need to read in these data sets one by one, figure out what the test word is (i.e. undo the transformation that was applied), create the relevant statistics and then add them to an overall data set.
+
+```{r}
+file_list <- paste0("cica_transformed_corpus_mgl_", 1:nrow(corp_data), ".sum")
+
+# create empty data set
+mgl_corp_predictions <- mgl_exp_predictions[0,]
+
+for (f in file_list) {
+  mgl_corp_word <- read_tsv(paste(mgl_corp_dir, f, sep="/"))
+  
+  # experimental data: reformat base
+  mgl_corp_word$form1 <- gsub("^([jNTgrnczdmstlhkKfSGZvpb=])([jNTgrnczdmstlhkKfSGZvpb])([eiaIuoEyOwWUA])", "\\1\\3\\2", mgl_corp_word$form1, perl=T)
+  mgl_corp_word$form1 <- gsub("=", "", mgl_corp_word$form1)
+
+  # extract relevant stats
+  mgl_corp_word_pred <- mgl_corp_word %>%
+    dplyr::select(form1, B, confidence) %>%
+    mutate(mgl = logit(confidence / sum(confidence))) %>%
+    filter(B=="b") %>%
+    dplyr::select(form1, mgl)
+  
+  # add to existing data set
+  mgl_corp_predictions <- rbind(mgl_corp_predictions, mgl_corp_word_pred)
+}
+```
+
+And now merging with the stimulus data set and then the experimental data.
+
+```{r}
+exp_stim <- exp_stim %>%
+  mutate(form1 = magyar2(item)) %>%
+  inner_join(mgl_exp_predictions, by="form1")
+
+exp_data <- exp_data %>%
+  inner_join(exp_stim[,c("item", "mgl")], by="item")
+
+corp_data$mgl <- mgl_corp_predictions$mgl
+```
+
+## Saving files
+
+```{r}
+write.csv(exp_data, file="../final_data/exp_data.csv", row.names=F) # write_csv doesn't work as it automatically adds a byte-order-marker to the file, which can't be read by read_csv
+write.csv(corp_data, file="../final_data/corp_data.csv", row.names=F)
+```
+
+

@@ -1,0 +1,3 @@
+form	pattern	form1		form2		A		B	Change		Pres	Pfeat	P		Q	Qfeat	Qres	scope	hits	reliability	confidence	related forms	exceptions
+1	1	=sata	->	=msata	by	[]	->	m	/m/2	/		[=, K, T, c, k, p, t]		___		[c, s, t]	Y	13	13	1.0	0.9282568796795697	ccia, ccea, ccikO, pcii, pswe, =cia, psukO, Tsui, kcOi, pciUr, Tsoi, ktaa, ptaron				
+1	2	=sata	->	=bsata	by	[]	->	b	/b/2	/			=	___		[S, Z, f, h, j, l, r, s, v, z]	Y	15	14	0.9333333333333333	0.8543206233789582	=jeNe, =ziE, =Seet, =leeG, =rai, =heem, =redW, =lavi, =raaN, =ziom, =rodaS, =laku, =jeNuS, =roSi	=ziE			

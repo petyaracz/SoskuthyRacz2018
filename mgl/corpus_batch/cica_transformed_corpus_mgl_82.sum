@@ -1,0 +1,3 @@
+form	pattern	form1		form2		A		B	Change		Pres	Pfeat	P		Q	Qfeat	Qres	scope	hits	reliability	confidence	related forms	exceptions
+1	1	=ziom	->	=mziom	by	[]	->	m	/m/2	/		[=, D, G, K, S, T, Z, b, c, d, f, g, k, p, s, t, v, z]		___		[s, z]	Y	10	9	0.9	0.7876714957234607	=ziE, =sata, pswe, psukO, Tsui, gsuti, Tsoi, Gsui, ssuog	=ziE			
+1	2	=ziom	->	=bziom	by	[]	->	b	/b/2	/			=	___		[D, G, N, Z, b, d, g, j, l, m, n, r, v, z]	Y	31	28	0.9032258064516129	0.8525066108322776	=jeNe, =gura, =guri, =dEi, =ziE, =leeG, =rai, =gurAl, =Gue, =gAi, =redW, =niga, =lavi, =Gee, =raaN, =nana, =nedi, =rodaS, =laku	=ziE, =nuci, =bau			

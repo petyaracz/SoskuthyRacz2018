@@ -1,0 +1,3 @@
+form	pattern	form1		form2		A		B	Change		Pres	Pfeat	P		Q	Qfeat	Qres	scope	hits	reliability	confidence	related forms	exceptions
+1	1	draa	->	dmraa	by	[]	->	m	/m/2	/		[c, d, t]		___		[Z, l, r, v, z]	Y	8	7	0.875	0.7397826192200189	troGi, druva, cliu, clia, clua, tvee, tvei	druci			
+1	2	draa	->	dbraa	by	[]	->	b	/b/2	/		[D, G, N, Z, b, d, g, l, m, n, r, v, z]		___		[N, l, m, n, r]	Y	19	17	0.8947368421052632	0.785656238206704	zrodom, Nluam, zrwgW, NlUom, gnwdi, rnoGoS, lnaGi, nroci, rmIel, vreSi, druci, GmEAn, Grukes, rnedi, rnedWr, vrwwS, zloa	druva, grea			

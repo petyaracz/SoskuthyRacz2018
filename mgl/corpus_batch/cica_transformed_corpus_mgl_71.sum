@@ -1,0 +1,3 @@
+form	pattern	form1		form2		A		B	Change		Pres	Pfeat	P		Q	Qfeat	Qres	scope	hits	reliability	confidence	related forms	exceptions
+1	1	fnaki	->	fmnaki	by	[]	->	m	/m/2	/		[S, f, h, s]		___		[c, d, l, n, s, t, z]	Y	14	9	0.6428571428571429	0.5444670614090859	snadi, hnaci, scoi, flee, hlai, hnuci, StEa, sdaO, ssuog	hlelO, Stutog, Snyi, snetem, snudi			
+1	2	fnaki	->	fbnaki	by	[]	->	b	/b/2	/		[=, D, G, K, S, T, Z, b, c, d, f, g, k, p, s, t, v, z]		___		[D, G, N, b, d, g, m, n]	Y	51	42	0.8235294117647058	0.7805137139391948	Tgia, TnIja, =gura, =guri, =dEi, tnydi, Tnoka, gnwdi, Zgia, Tnii, =gurAl, GGaa, =Gue, Tnoti, sbay, =gAi, =niga, tnyci, =Gee	snadi, =nuci, Tnii, =bau, kNwvi, sdaO, tNaa, tnAci, zbai			

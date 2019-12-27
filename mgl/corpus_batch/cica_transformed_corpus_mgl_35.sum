@@ -1,0 +1,3 @@
+form	pattern	form1		form2		A		B	Change		Pres	Pfeat	P		Q	Qfeat	Qres	scope	hits	reliability	confidence	related forms	exceptions
+1	1	Zgia	->	Zmgia	by	[]	->	m	/m/2	/		[N, S, Z, f, h, m, n, s, v, z]		___		[=, D, G, K, S, T, Z, b, c, d, f, g, k, p, s, t, v, z]	Y	20	13	0.65	0.5689285714285715	Nsui, hguO, hSui, fkia, SSuog, scoi, fSoi, NZyi, StEa, sdaO, ssuog, vcia, zbai	Stutog, sbay, Nsui, skesi, skEem, vGeEs, ZdiO			
+1	2	Zgia	->	Zbgia	by	[]	->	b	/b/2	/		[=, D, G, K, S, T, Z, b, c, d, f, g, k, p, s, t, v, z]		___		[G, g]	Y	14	14	1.0	0.9335640124787361	Tgia, =gura, =guri, =gurAl, GGaa, =Gue, =gAi, =Gee, tgiriS, =geEr, =gien, =guor, gguli, vGeEs				

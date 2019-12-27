@@ -1,0 +1,3 @@
+form	pattern	form1		form2		A		B	Change		Pres	Pfeat	P		Q	Qfeat	Qres	scope	hits	reliability	confidence	related forms	exceptions
+1	1	rZia	->	rmZia	by	[]	->	m	/m/2	/		[N, S, Z, f, h, l, m, n, r, s, v, z]		___		[=, D, G, K, S, T, Z, b, c, d, f, g, k, p, s, t, v, z]	Y	26	15	0.5769230769230769	0.5081303842876791	Nsui, hguO, hSui, lkwi, fkia, SSuog, scoi, fSoi, lcOi, NZyi, StEa, sdaO, ssuog, vcia, zbai	rkOa, Zgia, Stutog, sbay, lzaa, lkusuS, Nsui, skesi, skEem, vGeEs, ZdiO			
+1	2	rZia	->	rbZia	by	[]	->	b	/b/2	/		[Z, l, r, v, z]		___		[N, S, Z, f, h, l, m, n, r, s, v, z]	Y	12	12	1.0	0.9226783472660829	zrodom, zrwgW, rnoGoS, lzaa, lnaGi, rmIel, vreSi, rnedi, rnedWr, vrwwS, zloa, zhuog				

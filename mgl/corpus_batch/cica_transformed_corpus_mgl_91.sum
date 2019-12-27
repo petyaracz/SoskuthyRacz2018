@@ -1,0 +1,3 @@
+form	pattern	form1		form2		A		B	Change		Pres	Pfeat	P		Q	Qfeat	Qres	scope	hits	reliability	confidence	related forms	exceptions
+1	1	hrwgi	->	hmrwgi	by	[]	->	m	/m/2	/		[S, f, h, s]		___		[S, Z, f, h, l, r, s, v, z]	Y	19	10	0.5263157894736842	0.4459505692620118	frui, hSui, hrwgW, SSuog, flee, fSoi, hlai, SrAi, Srwi, ssuog	hlelO, frakaS, Srurog, hree, hrwgW, fruTa, frUok, frydi, fryge			
+1	2	hrwgi	->	hbrwgi	by	[]	->	b	/b/2	/		[N, S, Z, f, h, m, n, s, v, z]		___	r	[E, O, U, W, Y, e, i, o, u, w, y]	Y	15	12	0.8	0.7076000413696654	zrodom, Srurog, zrwgW, hree, hrwgW, nroci, vreSi, fruTa, frUok, frydi, fryge, vrwwS	frui, hrwgW, Srwi			

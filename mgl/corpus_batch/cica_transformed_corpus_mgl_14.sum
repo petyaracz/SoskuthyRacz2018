@@ -1,0 +1,3 @@
+form	pattern	form1		form2		A		B	Change		Pres	Pfeat	P		Q	Qfeat	Qres	scope	hits	reliability	confidence	related forms	exceptions
+1	1	Nluam	->	Nmluam	by	[]	->	m	/m/2	/		[G, K, N, g, k]		___		[S, Z, f, h, j, l, r, s, v, z]	Y	12	8	0.6666666666666666	0.5577115403850001	Nsui, kriTi, gsuti, klua, grea, Gsui, kjaTi, NZyi	NlUom, Grukes, kruuKK, Nsui			
+1	2	Nluam	->	Nbluam	by	[]	->	b	/b/2	/		[N, Z, l, m, n, r, v, z]		___		[N, l, m, n, r]	Y	12	12	1.0	0.9226783472660829	zrodom, zrwgW, NlUom, rnoGoS, lnaGi, nroci, rmIel, vreSi, rnedi, rnedWr, vrwwS, zloa				

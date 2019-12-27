@@ -1,0 +1,3 @@
+form	pattern	form1		form2		A		B	Change		Pres	Pfeat	P		Q	Qfeat	Qres	scope	hits	reliability	confidence	related forms	exceptions
+1	1	hnuci	->	hmnuci	by	[]	->	m	/m/2	/		[S, f, h, s]		___		[c, d, l, n, s, t, z]	Y	14	9	0.6428571428571429	0.5444670614090859	snadi, fnaki, hnaci, scoi, flee, hlai, StEa, sdaO, ssuog	hlelO, Stutog, Snyi, snetem, snudi			
+1	2	hnuci	->	hbnuci	by	[]	->	b	/b/2	/		[=, D, G, K, N, S, T, Z, b, c, d, f, g, h, k, l, m, n, p, r, s, t, v, z]		___	n	[E, I, O, U, W, Y, e, i, o, u, w, y]	Y	24	22	0.9166666666666666	0.858358674372686	TnIja, tnydi, Tnoka, gnwdi, Tnii, Tnoti, =niga, tnyci, rnoGoS, Snyi, =nedi, TnegW, snetem, tnyTi, =niog, =nuTi, =nudi, Tnwgwtt, rnedi	=nuci, Tnii			
