@@ -15,12 +15,12 @@ library(tidyverse)
 library(arm)
 
 # loading experimental & corpus data
-exp_data <- read_csv("../raw_data/exp_data.csv")
-corp_data <- read_csv("../raw_data/echo_pair_corpus.csv")
+exp_data <- read_csv("exp_data.csv")
+corp_data <- read_csv("echo_pair_corpus.csv")
 
 # loading MGL model predictions for nonce-forms
-mgl_exp <- read_delim("../petya_code/cicapetyamgl/cica_transformed_mgl.sum", delim="\t")
-mgl_corp_dir <- "../petya_code/cicapetyamgl/corpus_batch"
+mgl_exp <- read_delim("mgl/cica_transformed_mgl.sum", delim="\t")
+mgl_corp_dir <- "mgl/corpus_batch"
 
 # loading helper functions for processing MGL output
 source("cicamica_helper_functions.r")
@@ -327,7 +327,7 @@ for (f in file_list) {
 And now merging with the stimulus data set and then the experimental data.
 
 ```{r}
-exp_stim <- exp_stim %>%
+exp_stim <- exp_stim %>% # exp_stim is generated in the code block starting at line 96
   mutate(form1 = magyar2(item)) %>%
   inner_join(mgl_exp_predictions, by="form1")
 
