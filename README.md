@@ -1,3 +1,9 @@
+
+
+[![DOI](https://zenodo.org/badge/142610812.svg)](https://zenodo.org/badge/latestdoi/142610812)
+
+
+
 # SoskuthyRacz2018
 
 data and code
